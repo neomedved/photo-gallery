@@ -3,35 +3,33 @@ export default class Api {
     this.baseUrl = baseUrl;
   }
 
-  template(url) {
+  async template(url) {
     return fetch(`${this.baseUrl}/${url}`, { method: 'GET' })
       .then((res) => {
         if (res.ok) {
           return res.json();
         }
-        console.log(res);
         return Promise.reject(new Error('Loading Error'));
       });
   }
 
-  getUsers() {
+  async getUsers() {
     return this.template('users');
   }
 
-  getUser(userId) {
+  async getUser(userId) {
     return this.template(`users/${userId}`);
   }
 
-  getAlbums(userId) {
-    return this.template(`albums?userId=${userId}`);
+  async getAlbums(userId) {
+    return this.template(`users/${userId}/albums`);
   }
 
-  getAlbum(albumId) {
+  async getAlbum(albumId) {
     return this.template(`albums/${albumId}`);
   }
 
-
-  getPhotos(albumId) {
-    return this.template(`photos?albumId=${albumId}`);
+  async getPhotos(albumId) {
+    return this.template(`albums/${albumId}/photos`);
   }
 };

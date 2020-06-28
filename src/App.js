@@ -1,28 +1,23 @@
 import React from 'react';
-import { Router, Switch, Route, Link, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from 'react-router-dom';
 
 import Page from './components/Page';
+import Error from './components/Error';
 
-export default class App extends React.Component {
-  render() {
-    return <Router history={this.props.history}>
-      <Switch>
-        <Route path='/error' exact>
-          <div>
-            <h1>Ошибка</h1>
-            <h2>Не удалось получить данные :(</h2>
-            <Link to='/'>Вернуться на главную</Link>
-          </div>
-        </Route>
+export default function App(props) {
+  return <Router>
+    <Switch>
+      <Route path='/error' exact>
+        <Error />
+      </Route>
 
-        <Route path='/:userId/:albumId' component={Page.setParams} exact/>
-        
-        <Route path='/:userId' component={Page.setParams} exact/>
+      <Route path='/:userId/:albumId' component={Page} exact/>
+      
+      <Route path='/:userId' component={Page} exact/>
 
-        <Route path='/' component={Page.setParams} exact/>
+      <Route path='/' component={Page} exact/>
 
-        <Redirect path='*' to='/error' />
-      </Switch>
-    </Router>
-  }
+      <Redirect path='*' to='/error' />
+    </Switch>
+  </Router>
 };

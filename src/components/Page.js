@@ -1,71 +1,139 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import Header from './Header';
+import Container from './Container';
 import Api from '../api/Api';
 import { BASE_URL } from '../constants/config';
 
 const api = new Api(BASE_URL);
 
-export default class Page extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      isLoaded: false,
-      error: null,
-      header: {},
+export default withRouter(
+  class Page extends React.Component{
+    constructor(props){
+      super(props);
+      this.state = {
+        isLoaded: false,
+        error: null,
+        header: {},
+        data: [],
+      }
     }
-  }
 
-  componentDidMount() {
-    const { userId, albumId } = this.props.params;
-    const state = { header: {} };
-    const promises = [];
 
-    if (albumId) {
-      promises.push(api.getAlbum(albumId)
-        .then((data) => {
-          if (data.userId.toString() !== userId) {
-            throw new Error('Invalid Request');
-          } else {
-            state.header.album = data.title;
-            return Promise.resolve();
+    static async renderHeader (userId, albumId) {
+      const user = userId ? (await api.getUser(userId)).name : '';
+      const album = albumId ? (await api.getAlbum(albumId)).title : '';
+      return {
+        user,
+        album,
+      }
+    }
+    
+
+    static async renderUsers() {
+      const data = await api.getUsers();
+      return data.map((element) => {
+        return {
+          id: element.id,
+          caption: {
+            title: element.name,
+            subtitle: `@${element.username}`,
+          },
+        };
+      });   
+    }
+
+
+    static async renderAlbums(userId){
+      const albums = await api.getAlbums(userId);
+      return await Promise.all(albums.map(async (element) => {
+        const photos = await api.getPhotos(element.id);
+        return {
+          id: element.id,
+          caption: {
+            title: element.title,
+            subtitle: `Фотографий: ${photos.length}`,
+          },
+          image: {
+            src: photos[0].thumbnailUrl,
+            alt: element.title,
           }
-        }));
+        }
+      }));
     }
 
-    if (userId) {
-      promises.push(api.getUser(userId)
-        .then((data) => {
-          state.header.user = data.name;
-          return Promise.resolve();
-        }));
+
+    static async renderPhotos(albumId) {
+      const data = await api.getPhotos(albumId)  
+      return data.map((element) => {
+        return {
+          id: element.id,
+          image: {
+            src: element.thumbnailUrl,
+            alt: `${element.title}`,
+          }
+        };
+      });
     }
 
-    Promise.all(promises)
-      .then(() => state.isLoaded = true)
-      .catch((err) =>  state.error = err)
-      .finally(() => this.setState(state));
+
+    updateState() {
+      const { userId, albumId } = this.props.match.params;
+      const state = {
+        header: {},
+        data: [],
+      };
+      const promises = [];
+
+      promises.push(Page.renderHeader(userId, albumId, state));
+
+      if(albumId) {
+        promises.push(Page.renderPhotos(albumId,state));
+      } else if (userId) {
+        promises.push(Page.renderAlbums(userId));
+      } else {
+        promises.push(Page.renderUsers());
+      }
+
+      Promise.all(promises)
+        .then((result) => {
+          state.header = result[0];
+          state.data = result[1];
+          state.isLoaded = true;
+        })
+        .catch((err) =>  state.error = err)
+        .finally(() => this.setState(state));
+    }
+
+
+    componentDidMount() {
+      this.updateState();
+    }
+
+    componentDidUpdate() {
+      this.updateState();
+    }
+
+
+    render() {
+      const { userId, albumId } = this.props.match.params;
+      const { user, album } = this.state.header;
+      if (this.state.error) {
+        return <Redirect to='/error' />
+      } else if (this.state.isLoaded) {
+        return <React.Fragment>
+          <Header 
+            location={this.props.location}
+            userId={userId}
+            user={user}
+            albumId={albumId}
+            album={album}
+          />
+          <Container data={this.state.data} />
+        </React.Fragment>;
+      } else {
+        return null;
+      }
+    }
   }
-
-  static setParams(props) {
-    return <Page params={props.match.params} />
-  }
-
-  render() {
-    const { userId, albumId } = this.props.params;
-    const { user, album } = this.state.header;
-    if(this.state.isLoaded) {
-    return <Header 
-      userId={userId}
-      user={user}
-      albumId={albumId}
-      album={album}
-    />;
-    } else if (this.state.error) {
-      return <Redirect to='/error' />
-    }
-    else {
-      return <Header />;
-    }
-  }
-};
+);
