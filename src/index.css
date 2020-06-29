@@ -1,10 +1,19 @@
 @import 'normalize.css';
+@import './vendor/fonts.css';
+@import './css/App.css';
 
 body {
   margin: 0;
   color: #061B33;
   background-color: #B6D8D5;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  margin: 0 auto;
+  width: 1440px;
+  min-height: 100vh;
+  background-color: #84b0af;
 }

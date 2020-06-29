@@ -1,0 +1,16 @@
+.header__link {
+  max-width: 420px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: #c45238;
+  color: #84b0af;
+  text-decoration: none;
+  padding: 3px 7px;
+  border-radius: 7px;
+}
+
+.header__link:focus {
+  outline: none;
+}

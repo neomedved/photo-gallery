@@ -1,0 +1,7 @@
+.header__slash {
+  display: inline-block;
+  vertical-align: top;
+  margin: 3px 8px;
+  cursor: default;
+  color: #c45238;
+}

@@ -1,0 +1,13 @@
+@import './__link/header__link.css';
+@import './__slash/header__slash.css';
+
+.header {
+  margin: 0 auto;
+  width: 100%;
+  padding: 24px 80px 18px;
+  box-sizing: border-box;
+  font-size: 32px;
+  line-height: 37px;
+  font-weight: bold;
+  border-bottom: 5px solid #c45238;
+}

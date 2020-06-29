@@ -1,0 +1,10 @@
+.error__link {
+  margin: 18px 0 0;
+  font-size: 28px;
+  font-weight: bold;
+  text-decoration: none;
+  background-color: #c45238;
+  color: #84b0af;
+  padding: 4px 7px;
+  border-radius: 6px;
+}

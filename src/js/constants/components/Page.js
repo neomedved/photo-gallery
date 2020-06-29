@@ -21,11 +21,12 @@ export default withRouter(
 
 
     static async renderHeader (userId, albumId) {
+      let album = albumId ? (await api.getAlbum(albumId)) : { title: '' };
+      userId = userId || album.userId;
       const user = userId ? (await api.getUser(userId)).name : '';
-      const album = albumId ? (await api.getAlbum(albumId)).title : '';
       return {
         user,
-        album,
+        album: album.title,
       }
     }
     
@@ -80,7 +81,10 @@ export default withRouter(
     updateState() {
       const { userId, albumId } = this.props.match.params;
       const state = {
-        header: {},
+        header: {
+          userId,
+          albumId,
+        },
         data: [],
       };
       const promises = [];
@@ -97,7 +101,10 @@ export default withRouter(
 
       Promise.all(promises)
         .then((result) => {
-          state.header = result[0];
+          state.header = {
+            ...state.header,
+            ...result[0],
+          };
           state.data = result[1];
           state.isLoaded = true;
         })
@@ -110,25 +117,21 @@ export default withRouter(
       this.updateState();
     }
 
-    componentDidUpdate() {
-      this.updateState();
+    componentDidUpdate(prevProps) {
+      const { userId: prevUserId, albumId: prevAlbumId } = prevProps.match.params;
+      const { userId, albumId } = this.props.match.params;
+      if(userId !== prevUserId || albumId !== prevAlbumId) {
+        this.updateState();
+      }
     }
 
 
     render() {
-      const { userId, albumId } = this.props.match.params;
-      const { user, album } = this.state.header;
       if (this.state.error) {
         return <Redirect to='/error' />
       } else if (this.state.isLoaded) {
         return <React.Fragment>
-          <Header 
-            location={this.props.location}
-            userId={userId}
-            user={user}
-            albumId={albumId}
-            album={album}
-          />
+          <Header {...this.state.header}/>
           <Container data={this.state.data} />
         </React.Fragment>;
       } else {
