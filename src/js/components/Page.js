@@ -148,7 +148,7 @@ export default withRouter(
         return <Redirect to={`${PUBLIC_URL}/error`} />
       } else if (this.state.isLoaded) {
         const { userId, albumId } = this.state.header;
-        const url = '/' + (userId ? `${userId}/` : '') + (albumId ? `${albumId}/` : '');
+        const url = `${PUBLIC_URL}/${userId ? `${userId}/` : ''}${albumId ? `${albumId}/` : ''}`;
         return <React.Fragment>
           <Header {...this.state.header}/>
           <Container data={this.state.data} url={url} />
