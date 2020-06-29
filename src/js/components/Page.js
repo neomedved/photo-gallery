@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import Header from './Header';
 import Container from './Container';
+import Popup from './Popup';
 import Api from '../api/Api';
 import { API_URL, PUBLIC_URL } from '../constants/config';
 
@@ -32,66 +33,80 @@ export default withRouter(
 
     static async renderUsers() {
       const data = await api.getUsers();
-      return data.map((element) => {
-        return {
-          id: element.id,
-          caption: {
-            title: element.name,
-            subtitle: `@${element.username}`,
-          },
-        };
-      });   
+      return {
+        data: data.map((element) => {
+          return {
+            id: element.id,
+            caption: {
+              title: element.name,
+              subtitle: `@${element.username}`,
+            },
+          };
+        }),
+      };   
     }
 
 
     static async renderAlbums(userId){
       const albums = await api.getAlbums(userId);
-      return await Promise.all(albums.map(async (element) => {
-        const photos = await api.getPhotos(element.id);
-        return {
-          id: element.id,
-          caption: {
-            title: element.title,
-            subtitle: `Фотографий: ${photos.length}`,
-          },
-          image: {
-            src: photos[0].thumbnailUrl,
-            alt: element.title,
+      return {
+        data: await Promise.all(albums.map(async (element) => {
+          const photos = await api.getPhotos(element.id);
+          return {
+            id: element.id,
+            caption: {
+              title: element.title,
+              subtitle: `Фотографий: ${photos.length}`,
+            },
+            image: {
+              src: photos[0].thumbnailUrl,
+              alt: element.title,
+            }
           }
-        }
-      }));
+        })),
+      };
     }
 
 
-    static async renderPhotos(albumId) {
-      const data = await api.getPhotos(albumId)  
-      return data.map((element) => {
+    static async renderPhotos(albumId, photoId) {
+      const data = await api.getPhotos(albumId);
+      let popup = null;
+      const result = data.map((element, index) => {
+        if (photoId === element.id.toString()) {
+          popup = {
+            src: element.url,
+            alt: element.title,
+            prevId: index > 0 ? data[index - 1].id : null,
+            nextId: index < data.length - 1 ? data[index + 1].id : null,
+          };
+        }
         return {
           id: element.id,
           image: {
             src: element.thumbnailUrl,
             alt: `${element.title}`,
-          }
+          },
         };
       });
+      if (photoId && !popup) {
+        throw new Error('Invalid Request');
+      }
+      return {
+        data: result,
+        popup,
+      }
     }
 
 
     updateState() {
-      const { userId, albumId } = this.props.match.params;
-      const state = {
-        header: {
-          userId,
-          albumId,
-        },
-        data: [],
-      };
+      const { userId, albumId, photoId } = this.props.match.params;
+      let state;
       const promises = [];
 
-      promises.push(Page.renderHeader(userId, albumId, state));
+      promises.push(Page.renderHeader(userId, albumId));
 
       if(albumId) {
-        promises.push(Page.renderPhotos(albumId,state));
+        promises.push(Page.renderPhotos(albumId, photoId));
       } else if (userId) {
         promises.push(Page.renderAlbums(userId));
       } else {
@@ -100,14 +115,17 @@ export default withRouter(
 
       Promise.all(promises)
         .then((result) => {
-          state.header = {
-            ...state.header,
-            ...result[0],
+          state = {
+            header: {
+              ...result[0],
+              userId,
+              albumId,
+            },
+            ...result[1],
+            isLoaded: true,
           };
-          state.data = result[1];
-          state.isLoaded = true;
         })
-        .catch((err) =>  state.error = err)
+        .catch((error) =>  state = { error })
         .finally(() => this.setState(state));
     }
 
@@ -117,9 +135,9 @@ export default withRouter(
     }
 
     componentDidUpdate(prevProps) {
-      const { userId: prevUserId, albumId: prevAlbumId } = prevProps.match.params;
-      const { userId, albumId } = this.props.match.params;
-      if(userId !== prevUserId || albumId !== prevAlbumId) {
+      const { userId: prevUserId, albumId: prevAlbumId, photoId: prevPhotoId} = prevProps.match.params;
+      const { userId, albumId, photoId } = this.props.match.params;
+      if(userId !== prevUserId || albumId !== prevAlbumId || photoId !== prevPhotoId) {
         this.updateState();
       }
     }
@@ -129,9 +147,12 @@ export default withRouter(
       if (this.state.error) {
         return <Redirect to={`${PUBLIC_URL}/error`} />
       } else if (this.state.isLoaded) {
+        const { userId, albumId } = this.state.header;
+        const url = '/' + (userId ? `${userId}/` : '') + (albumId ? `${albumId}/` : '');
         return <React.Fragment>
           <Header {...this.state.header}/>
-          <Container data={this.state.data} />
+          <Container data={this.state.data} url={url} />
+          {this.state.popup ? <Popup {...this.state.popup} url={url} /> : null}
         </React.Fragment>;
       } else {
         return null;

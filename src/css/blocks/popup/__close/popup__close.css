@@ -1,0 +1,15 @@
+.popup__close {
+  position: absolute;
+  top: -31px;
+  right: -31px;
+  width: 26px;
+  height: 26px;
+  opacity: .5;
+  background-image: url('../../../../images/close.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.popup__close:focus {
+  outline: none;
+}

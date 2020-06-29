@@ -12,11 +12,13 @@ export default function App(props) {
         <Error />
       </Route>
 
-      <Route path={`${PUBLIC_URL}/:userId/:albumId`} component={Page} exact/>
-      
-      <Route path={`${PUBLIC_URL}/:userId`} component={Page} exact/>
+      <Route path={`${PUBLIC_URL}/:userId/:albumId/:photoId`} component={Page} exact />
 
-      <Route path={`${PUBLIC_URL}/`} component={Page} exact/>
+      <Route path={`${PUBLIC_URL}/:userId/:albumId`} component={Page} exact />
+      
+      <Route path={`${PUBLIC_URL}/:userId`} component={Page} exact />
+
+      <Route path={`${PUBLIC_URL}/`} component={Page} exact />
 
       <Redirect path='*' to={`${PUBLIC_URL}/error`} />
     </Switch>

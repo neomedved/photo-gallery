@@ -1,0 +1,17 @@
+@import './_left/popup__switch_left.css';
+@import './_right/popup__switch_right.css';
+
+.popup__switch {
+  position: absolute;
+  top: calc(50% - 46px);
+  height: 92px;
+  font-size: 80px;
+  font-weight: bold;
+  color: white;
+  opacity: .5;
+  text-decoration: none;
+}
+
+.popup__switch:focus {
+  outline: none;
+}
