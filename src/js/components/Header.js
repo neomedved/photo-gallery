@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
+import { PUBLIC_URL } from '../constants/config';
 
 export default withRouter(
   function Header(props) {
     const { user, userId, album, albumId } = props;
     return <header className='header'>
-      <Link to='/' className='header__link'>Галерея</Link>
+      <Link to={`${PUBLIC_URL}/`} className='header__link'>Галерея</Link>
 
       {
         userId ?

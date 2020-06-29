@@ -3,9 +3,9 @@ import { Redirect, withRouter } from 'react-router-dom';
 import Header from './Header';
 import Container from './Container';
 import Api from '../api/Api';
-import { BASE_URL } from '../constants/config';
+import { API_URL, PUBLIC_URL } from '../constants/config';
 
-const api = new Api(BASE_URL);
+const api = new Api(API_URL);
 
 export default withRouter(
   class Page extends React.Component{
@@ -127,7 +127,7 @@ export default withRouter(
 
     render() {
       if (this.state.error) {
-        return <Redirect to='/error' />
+        return <Redirect to={`${PUBLIC_URL}/error`} />
       } else if (this.state.isLoaded) {
         return <React.Fragment>
           <Header {...this.state.header}/>

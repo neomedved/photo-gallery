@@ -3,21 +3,22 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 
 import Page from './components/Page';
 import Error from './components/Error';
+import { PUBLIC_URL } from './constants/config';
 
 export default function App(props) {
   return <Router>
     <Switch>
-      <Route path='/error' exact>
+      <Route path={`${PUBLIC_URL}/error`} exact>
         <Error />
       </Route>
 
-      <Route path='/:userId/:albumId' component={Page} exact/>
+      <Route path={`${PUBLIC_URL}/:userId/:albumId`} component={Page} exact/>
       
-      <Route path='/:userId' component={Page} exact/>
+      <Route path={`${PUBLIC_URL}/:userId`} component={Page} exact/>
 
-      <Route path='/' component={Page} exact/>
+      <Route path={`${PUBLIC_URL}/`} component={Page} exact/>
 
-      <Redirect path='*' to='/error' />
+      <Redirect path='*' to={`${PUBLIC_URL}/error`} />
     </Switch>
   </Router>
 };
