@@ -5,7 +5,7 @@ import Card from './Card';
 
 export default withRouter(
   function Container (props) {
-    return <main>
+    return <main className='cards'>
       {
         props.data.map((element) => {
           return <Card key={`${props.location.pathname.replace(/\/$/, '')}/${element.id}`} card={element} />;

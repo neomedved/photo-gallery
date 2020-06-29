@@ -5,7 +5,7 @@
 body {
   margin: 0;
   color: #061B33;
-  background-color: #B6D8D5;
+  background-color: #84b0af;
   font-family: 'Roboto', Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -15,5 +15,5 @@ body {
   margin: 0 auto;
   width: 1440px;
   min-height: 100vh;
-  background-color: #84b0af;
+  background-color: #B6D8D5;
 }

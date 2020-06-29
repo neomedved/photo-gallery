@@ -12,7 +12,7 @@ export default withRouter(
         userId ?
           <React.Fragment>
             <span className='header__slash'> / </span>
-            <Link to={`/${userId}`} className='header__link'>{`${user}`}</Link>
+            <Link to={`${PUBLIC_URL}/${userId}`} className='header__link'>{`${user}`}</Link>
           </React.Fragment> :
           null
       }
@@ -21,7 +21,7 @@ export default withRouter(
         albumId ?
           <React.Fragment>
             <span className='header__slash'> / </span>
-            <Link to={`/${userId}/${albumId}`} className='header__link'>{`${album}`}</Link>
+            <Link to={`${PUBLIC_URL}/${userId}/${albumId}`} className='header__link'>{`${album}`}</Link>
           </React.Fragment> :
           null
       }

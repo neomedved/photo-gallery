@@ -1,0 +1,19 @@
+.cards__card {
+  width: 150px;
+  box-sizing: border-box;
+  color: #B6D8D5;
+  margin: 18px 0 18px 38px;
+  padding: 0;
+  border-radius: 9px;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 7px 7px 5px #84b0af;
+}
+
+.cards__card:focus {
+  outline: none;
+}
+
+.cards__card:nth-of-type(7n+1) {
+  margin-left: 0;
+}

@@ -1,0 +1,12 @@
+.cards__title {
+  margin: 0;
+  padding: 7px 7px 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: bold;
+  font-size: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  background-color: #c45238;
+}
