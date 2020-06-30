@@ -8,4 +8,4 @@ export default function Error () {
     <h2 className='error__subtitle'>Не удалось получить данные :(</h2>
     <Link to={`${PUBLIC_URL}/`} className='error__link'>Вернуться на главную</Link>
   </main>;
-}
+};
