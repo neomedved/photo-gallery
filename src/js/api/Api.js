@@ -1,9 +1,9 @@
 export default class Api {
-  constructor(baseUrl) {
+  constructor (baseUrl) {
     this.baseUrl = baseUrl;
   }
 
-  async template(url) {
+  async template (url) {
     return fetch(`${this.baseUrl}/${url}`, { method: 'GET' })
       .then((res) => {
         if (res.ok) {
@@ -13,23 +13,23 @@ export default class Api {
       });
   }
 
-  async getUsers() {
+  async getUsers () {
     return this.template('users');
   }
 
-  async getUser(userId) {
+  async getUser (userId) {
     return this.template(`users/${userId}`);
   }
 
-  async getAlbums(userId) {
+  async getAlbums (userId) {
     return this.template(`users/${userId}/albums`);
   }
 
-  async getAlbum(albumId) {
+  async getAlbum (albumId) {
     return this.template(`albums/${albumId}`);
   }
 
-  async getPhotos(albumId) {
+  async getPhotos (albumId) {
     return this.template(`albums/${albumId}/photos`);
   }
-};
+}

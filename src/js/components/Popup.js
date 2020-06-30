@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
 export default withRouter(
-  function Popup(props) {
+  function Popup (props) {
     const { src, alt, prevId, nextId, url } = props;
     return <div className='popup'>
       <div className='popup__content'>
@@ -12,5 +12,5 @@ export default withRouter(
         <img className='popup__image' src={src} alt={alt} />
       </div>
     </div>;
-  }
+  },
 );

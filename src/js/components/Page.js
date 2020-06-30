@@ -9,15 +9,15 @@ import { API_URL, PUBLIC_URL } from '../constants/config';
 const api = new Api(API_URL);
 
 export default withRouter(
-  class Page extends React.Component{
-    constructor(props){
+  class Page extends React.Component {
+    constructor (props) {
       super(props);
       this.state = {
         isLoaded: false,
         error: null,
         header: {},
         data: [],
-      }
+      };
     }
 
 
@@ -27,11 +27,11 @@ export default withRouter(
       return {
         user,
         album,
-      }
+      };
     }
-    
 
-    static async renderUsers() {
+
+    static async renderUsers () {
       const data = await api.getUsers();
       return {
         data: data.map((element) => {
@@ -43,11 +43,11 @@ export default withRouter(
             },
           };
         }),
-      };   
+      };
     }
 
 
-    static async renderAlbums(userId){
+    static async renderAlbums (userId) {
       const albums = await api.getAlbums(userId);
       return {
         data: await Promise.all(albums.map(async (element) => {
@@ -61,14 +61,14 @@ export default withRouter(
             image: {
               src: photos[0].thumbnailUrl,
               alt: element.title,
-            }
-          }
+            },
+          };
         })),
       };
     }
 
 
-    static async renderPhotos(albumId, photoId) {
+    static async renderPhotos (albumId, photoId) {
       const data = await api.getPhotos(albumId);
       let popup = null;
       const result = data.map((element, index) => {
@@ -94,18 +94,18 @@ export default withRouter(
       return {
         data: result,
         popup,
-      }
+      };
     }
 
 
-    updateState() {
+    updateState () {
       const { userId, albumId, photoId } = this.props.match.params;
       let state;
       const promises = [];
 
       promises.push(Page.renderHeader(userId, albumId));
 
-      if(albumId) {
+      if (albumId) {
         promises.push(Page.renderPhotos(albumId, photoId));
       } else if (userId) {
         promises.push(Page.renderAlbums(userId));
@@ -125,27 +125,27 @@ export default withRouter(
             isLoaded: true,
           };
         })
-        .catch((error) =>  state = { error })
+        .catch((error) => { state = { error }; })
         .finally(() => this.setState(state));
     }
 
 
-    componentDidMount() {
+    componentDidMount () {
       this.updateState();
     }
 
-    componentDidUpdate(prevProps) {
-      const { userId: prevUserId, albumId: prevAlbumId, photoId: prevPhotoId} = prevProps.match.params;
+    componentDidUpdate (prevProps) {
+      const { userId: prevUserId, albumId: prevAlbumId, photoId: prevPhotoId } = prevProps.match.params;
       const { userId, albumId, photoId } = this.props.match.params;
-      if(userId !== prevUserId || albumId !== prevAlbumId || photoId !== prevPhotoId) {
+      if (userId !== prevUserId || albumId !== prevAlbumId || photoId !== prevPhotoId) {
         this.updateState();
       }
     }
 
 
-    render() {
+    render () {
       if (this.state.error) {
-        return <Redirect to={`${PUBLIC_URL}/error`} />
+        return <Redirect to={`${PUBLIC_URL}/error`} />;
       } else if (this.state.isLoaded) {
         const { userId, albumId } = this.state.header;
         const url = `${PUBLIC_URL}/${userId ? `${userId}/` : ''}${albumId ? `${albumId}/` : ''}`;
@@ -158,5 +158,5 @@ export default withRouter(
         return null;
       }
     }
-  }
+  },
 );

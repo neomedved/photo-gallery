@@ -5,7 +5,7 @@ import Card from './Card';
 
 export default withRouter(
   function Container (props) {
-    const { url } = props
+    const { url } = props;
     return <main className='cards'>
       {
         props.data.map((element) => {
@@ -13,5 +13,5 @@ export default withRouter(
         })
       }
     </main>;
-}
+  },
 );
